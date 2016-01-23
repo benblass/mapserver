@@ -15,15 +15,24 @@ cherrypy_conf = {
 		}
 	}
 
-class mapServer(object):
-	def __init__(self):
-		pass
+class MapServer(object):
+    def __init__(self):
+        self.maptiles = Map()
 
-	@cherrypy.expose
-	def index(self):
-		return "<html>Running</html>"
+    @cherrypy.expose
+    def index(self):
+        return 'Running tout court'
 
-cherrypy.tree.mount(mapServer(), '/', config = cherrypy_conf)
+@cherrypy.popargs('fz','z','x','y')
+class Map(object):
+    @cherrypy.expose
+    def index(self, fz, z,x,y):
+        return '%s/%s/%s/%s' % (fz,z,x,y)
+
+
+mapserver = MapServer();
+
+cherrypy.tree.mount(mapserver, '/', config = cherrypy_conf)
 
 cherrypy.config.update({
 	'server.socket_port': host_port,
